@@ -24,9 +24,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
@@ -40,8 +37,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.zu.ardulink.Link;
-import org.zu.ardulink.gui.event.PWMChangeEvent;
-import org.zu.ardulink.gui.event.PWMControllerListener;
 import org.zu.ardulink.gui.facility.UtilityModel;
 import org.zu.ardulink.protocol.ReplyMessageCallback;
 
@@ -70,9 +65,6 @@ public class PWMController extends JPanel implements Linkable {
 	private JComboBox maxValueComboBox;
 	private JComboBox minValueComboBox;
 	private JComboBox pinComboBox;
-	private JLabel lblPowerPinController;
-	
-	private List<PWMControllerListener> pwmControllerListeners = new LinkedList<PWMControllerListener>();
 	
 	private Link link = Link.getDefaultInstance();
 	
@@ -137,7 +129,7 @@ public class PWMController extends JPanel implements Linkable {
 		progressBar.setBounds(96, 98, 16, 108);
 		add(progressBar);
 		
-		lblPowerPinController = new JLabel("Power Pin Controller");
+		JLabel lblPowerPinController = new JLabel("Power Pin Controller");
 		lblPowerPinController.setFont(new Font("SansSerif", Font.PLAIN, 12));
 		lblPowerPinController.setToolTipText("Power With Modulation");
 		lblPowerPinController.setHorizontalAlignment(SwingConstants.CENTER);
@@ -198,13 +190,10 @@ public class PWMController extends JPanel implements Linkable {
 			        float progress  = ((float)(((float)(powerValue - powerSlider.getMinimum()))*100.0f))/((float)powerSlider.getMaximum() - (float)powerSlider.getMinimum());
 			        progressBar.setValue((int)progress);
 			        
-			        notifyListeners(powerValue);
-			        
 			        int pin = Integer.parseInt((String)pinComboBox.getSelectedItem());
 			        link.sendPowerPinIntensity(pin, powerValue);
 			    }
 			}
-
 		});
 		
 		minValueComboBox.addActionListener(new ActionListener() {
@@ -257,41 +246,6 @@ public class PWMController extends JPanel implements Linkable {
 
 	public void setReplyMessageCallback(ReplyMessageCallback replyMessageCallback) {
 		throw new RuntimeException("Not developed yet");
-	}
+	}	
 	
-	public void setTitle(String title) {
-		lblPowerPinController.setText(title);
-	}
-	
-	public boolean addPWMControllerListener(PWMControllerListener listener) {
-		return pwmControllerListeners.add(listener);
-	}
-	
-	public boolean removePWMControllerListener(PWMControllerListener listener) {
-		return pwmControllerListeners.remove(listener);
-	}
-
-	private void notifyListeners(int powerValue) {
-		Iterator<PWMControllerListener> pwmControllerListenersIterator = pwmControllerListeners.iterator();
-		PWMChangeEvent event = new PWMChangeEvent(this, powerValue);
-		while (pwmControllerListenersIterator.hasNext()) {
-			PWMControllerListener pwmControllerListener = (PWMControllerListener) pwmControllerListenersIterator.next();
-			pwmControllerListener.pwmChanged(event);
-		}
-	}
-	
-	public int getValue() {
-		return Integer.parseInt((String)valueComboBox.getSelectedItem());
-	}
-
-	public void setValue(int value) {
-		int maxValue = Integer.parseInt((String)maxValueComboBox.getSelectedItem());
-		int minValue = Integer.parseInt((String)minValueComboBox.getSelectedItem());
-		if(value > maxValue) {
-			value = maxValue;
-		} else if(value < minValue) {
-			value = minValue;
-		}
-		valueComboBox.setSelectedItem(Integer.toString(value));
-	}
 }

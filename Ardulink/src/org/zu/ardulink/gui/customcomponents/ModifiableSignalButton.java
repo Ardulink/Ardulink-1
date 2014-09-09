@@ -219,7 +219,7 @@ public class ModifiableSignalButton extends JPanel implements Linkable {
 	 * @return value text field visibility
 	 */
 	public boolean isValueVisible() {
-		return signalButton.isValueVisible();
+		return signalButton.isVisible();
 	}
 
 	/**
