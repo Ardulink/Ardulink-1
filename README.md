@@ -5,7 +5,7 @@ This is the repository for Ardulink 1. Ardulink 1 is a complete, open source, ja
 
 Ardulink is heavily re engineerd in order to adhere to several international IoT standards. So, please, see Ardulink-2 repository for the last release.
 
-Of course Ardulink-1 is still a good point to start if you are searching for a simpler solution.
+
 
 	public static void main(String[] args) {
 		try {
